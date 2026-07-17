@@ -1,0 +1,519 @@
+/* ===== Tokens ===== */
+:root {
+  --paper: #eef1ec;
+  --ticket-bg: #fdfefc;
+  --ink: #17241b;
+  --ink-soft: #57634e;
+  --stamp: #1e7a4c;
+  --stamp-bright: #249a5f;
+  --stamp-ink: #0f4a2c;
+  --sale: #ab3737;
+  --line: #c4cabb;
+  --line-soft: #dee2d6;
+
+  --font-display: "Big Shoulders Display", sans-serif;
+  --font-body: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+}
+
+/* ===== Reset ===== */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--stamp);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Tipografía compartida ===== */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stamp-ink);
+  margin-bottom: 6px;
+}
+
+.titulo-app {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 44px;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.titulo-app--chico {
+  font-size: 28px;
+}
+
+.titulo-seccion {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin: 32px 0 14px;
+}
+
+/* ===== Botones ===== */
+.boton-primario {
+  background: var(--stamp);
+  color: #fdfefc;
+  border: none;
+  border-radius: 7px;
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.boton-primario:hover {
+  background: var(--stamp-bright);
+}
+
+.boton-primario:active {
+  transform: translateY(1px);
+}
+
+.boton-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.boton-fantasma {
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  padding: 11px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.boton-fantasma:hover {
+  border-color: var(--ink-soft);
+  color: var(--ink);
+}
+
+/* ===== Campos de formulario ===== */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.campo--ancho {
+  grid-column: 1 / -1;
+}
+
+.fila-codigo {
+  display: flex;
+  gap: 8px;
+}
+
+.fila-codigo input {
+  flex: 1;
+  min-width: 0;
+}
+
+.boton-generar-codigo {
+  flex-shrink: 0;
+  background: var(--paper);
+  border: 1.5px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 0 16px;
+  min-height: 44px;
+  min-width: 44px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--stamp-ink);
+  white-space: nowrap;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.boton-generar-codigo:hover {
+  border-color: var(--stamp);
+  background: #fff;
+}
+
+.boton-generar-codigo:active {
+  transform: translateY(1px);
+}
+
+.campo input,
+.campo select {
+  background: #fff;
+  border: 1.5px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--stamp);
+}
+
+.mensaje-error {
+  background: #f6e9e9;
+  color: var(--sale);
+  border: 1px solid var(--sale);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 12px 0 0;
+}
+
+/* ===== El componente "ticket" (elemento de firma) ===== */
+.ticket {
+  position: relative;
+  background: var(--ticket-bg);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(23, 36, 27, 0.07), 0 6px 16px rgba(23, 36, 27, 0.05);
+  animation: aparecer 0.35s ease both;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ticket__body {
+  padding: 22px 22px 18px;
+}
+
+.ticket__divider {
+  position: relative;
+  border-top: 2px dashed var(--line);
+}
+
+.ticket__divider::before,
+.ticket__divider::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.ticket__divider::before {
+  left: -11px;
+}
+
+.ticket__divider::after {
+  right: -11px;
+}
+
+.ticket__stub {
+  padding: 18px 22px 22px;
+}
+
+.ticket--usado .ticket__body,
+.ticket--usado .ticket__stub {
+  opacity: 0.55;
+}
+
+.ticket--usado::after {
+  content: "USADO";
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  color: var(--sale);
+  border: 2px solid var(--sale);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  padding: 2px 9px;
+  transform: rotate(10deg);
+  z-index: 1;
+}
+
+.ticket__beneficiario {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  margin: 0 0 2px;
+  word-break: break-word;
+}
+
+.ticket__valor {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--stamp-ink);
+  font-size: 15px;
+  margin: 0 0 6px;
+}
+
+.ticket__descripcion {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.ticket__codigo {
+  display: block;
+  width: 100%;
+  background: var(--paper);
+  border: 1.5px dashed var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--stamp-ink);
+  margin-bottom: 10px;
+}
+
+.ticket__codigo:hover {
+  border-color: var(--stamp);
+}
+
+.ticket__vencimiento {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 0 0 12px;
+}
+
+.ticket__acciones {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.ticket__acciones button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ticket__acciones button:hover {
+  color: var(--ink);
+}
+
+.ticket__acciones .accion-eliminar {
+  color: var(--sale);
+}
+
+.ticket__acciones .accion-eliminar:hover {
+  color: #7a2626;
+}
+
+/* ===== Página de login ===== */
+.pagina-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.ticket--login {
+  width: 100%;
+  max-width: 380px;
+}
+
+.ticket__body--login {
+  text-align: center;
+  padding-top: 32px;
+}
+
+.subtitulo-login {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin: 4px 0 0;
+}
+
+.ticket__stub--login {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 22px;
+}
+
+.ticket__stub--login .boton-primario {
+  margin-top: 4px;
+}
+
+/* ===== Dashboard ===== */
+.pagina-dashboard {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.acciones-encabezado {
+  display: flex;
+  gap: 10px;
+}
+
+.barra-busqueda {
+  position: relative;
+  margin: 22px 0 30px;
+  max-width: 420px;
+}
+
+.icono-busqueda {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+.campo-busqueda {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--line-soft);
+  border-radius: 8px;
+  padding: 12px 40px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.campo-busqueda::placeholder {
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.campo-busqueda:focus {
+  border-color: var(--stamp);
+}
+
+.boton-limpiar-busqueda {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink-soft);
+  padding: 4px 9px;
+  border-radius: 5px;
+}
+
+.boton-limpiar-busqueda:hover {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.ticket--formulario {
+  margin-top: 24px;
+}
+
+.grilla-formulario {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.acciones-formulario {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.grilla-codigos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 20px;
+}
+
+.estado-vacio {
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 15px;
+}
+
+@media (max-width: 480px) {
+  .titulo-app {
+    font-size: 34px;
+  }
+
+  .pagina-dashboard {
+    padding: 24px 16px 60px;
+  }
+}
